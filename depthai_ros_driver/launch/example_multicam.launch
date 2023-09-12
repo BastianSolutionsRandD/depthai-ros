@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<launch>
+    <rosparam file="$(find depthai_ros_driver)/config/multicam.yaml" />
+
+    <include file="$(find depthai_ros_driver)/launch/camera.launch">
+        <arg name="name" value="oak1"/>
+    </include>
+    <include file="$(find depthai_ros_driver)/launch/camera.launch">
+        <arg name="name" value="oak2"/>
+    </include>
+    
+
+
+</launch>
