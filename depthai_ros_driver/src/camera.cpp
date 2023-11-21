@@ -23,6 +23,7 @@ void Camera::onInit() {
     stopSrv = pNH.advertiseService("stop_camera", &Camera::stopCB, this);
     savePipelineSrv = pNH.advertiseService("save_pipeline", &Camera::startCB, this);
     saveCalibSrv = pNH.advertiseService("save_calibration", &Camera::stopCB, this);
+    mxidPublisher = pNH.advertise<std_msgs::String>("mxid_topic", 10, true);
 }
 
 void Camera::saveCalib() {
@@ -210,6 +211,16 @@ void Camera::startDevice() {
     }
 
     ROS_INFO("Camera with MXID: %s and Name: %s connected!", device->getMxId().c_str(), device->getDeviceInfo().name.c_str());
+    if (mxidPublisher.getNumSubscribers() > 0) {
+        // Only publish if there are subscribers to the topic
+        std_msgs::String mxidMsg;
+        mxidMsg.data = device->getMxId().c_str();
+        mxidPublisher.publish(mxidMsg);
+        ROS_INFO("MXID value published successfully");
+
+    }
+
+    
     auto protocol = device->getDeviceInfo().getXLinkDeviceDesc().protocol;
 
     if(protocol != XLinkProtocol_t::X_LINK_TCP_IP) {

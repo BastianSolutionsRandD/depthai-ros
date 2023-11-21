@@ -32,6 +32,7 @@ RGB::RGB(const std::string& daiNodeName,
 
     setXinXout(pipeline);
     ROS_DEBUG("Node %s created", daiNodeName.c_str());
+    mxidPublisher = node.advertise<std_msgs::String>("mxid_topic2", 10, true);
 }
 RGB::~RGB() = default;
 void RGB::setNames() {
@@ -84,6 +85,11 @@ void RGB::setupQueues(std::shared_ptr<dai::Device> device) {
         }
         rgbPub = it.advertiseCamera(getName() + "/image_raw", 1);
         colorQ = device->getOutputQueue(ispQName, ph->getParam<int>("i_max_q_size"), false);
+        ROS_INFO("Printing from inside Camera with MXID: %s and Name: %s connected!", device->getMxId().c_str(), device->getDeviceInfo().name.c_str());
+        std_msgs::String mxidMsg;
+        mxidMsg.data = device->getMxId().c_str();
+        mxidPublisher.publish(mxidMsg);
+        ROS_INFO("MXID value published successfully");
         if(ph->getParam<bool>("i_low_bandwidth")) {
             colorQ->addCallback(std::bind(sensor_helpers::compressedImgCB,
                                           std::placeholders::_1,

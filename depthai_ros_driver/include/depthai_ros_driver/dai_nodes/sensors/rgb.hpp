@@ -5,6 +5,7 @@
 #include "image_transport/camera_publisher.h"
 #include "image_transport/image_transport.h"
 #include "sensor_msgs/CameraInfo.h"
+#include "std_msgs/String.h"
 
 namespace dai {
 class Pipeline;
@@ -57,6 +58,7 @@ class RGB : public BaseNode {
     void setNames() override;
     void setXinXout(std::shared_ptr<dai::Pipeline> pipeline) override;
     void closeQueues() override;
+    ros::Publisher mxidPublisher;
 
    private:
     std::unique_ptr<dai::ros::ImageConverter> imageConverter;

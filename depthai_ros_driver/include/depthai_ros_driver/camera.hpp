@@ -7,6 +7,7 @@
 #include "nodelet/nodelet.h"
 #include "ros/node_handle.h"
 #include "std_srvs/Trigger.h"
+#include "std_msgs/String.h"
 
 namespace dai {
 class Pipeline;
@@ -19,6 +20,8 @@ class Camera : public nodelet::Nodelet {
    public:
     void onInit() override;
     void onConfigure();
+    ros::Publisher mxidPublisher;
+
 
    private:
     void getDeviceType();
